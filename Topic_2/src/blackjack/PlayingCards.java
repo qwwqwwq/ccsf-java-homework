@@ -1,9 +1,11 @@
+package blackjack;
 import java.util.Scanner;
 import java.util.Stack;
 import java.util.Collections;
+import java.awt.Color;
 
 enum Suits {
-    h, s, c, d
+    heart, club, diamond, spade
 };
 
 enum Ranks {
@@ -19,6 +21,7 @@ enum Ranks {
 };
 
 
+
 class Card {
     private Ranks rank;
     private Suits suit;
@@ -28,14 +31,27 @@ class Card {
     };
 
     public String toString() {
-	return ("" + rank.value + suit);
+	return ("" + rank.value);
+    };
+
+    public Suits getSuit() {
+	return suit;
+    };
+    public Ranks getRank() {
+	return rank;
     };
 };
 
 class Deck {
     private java.util.Stack<Card> cards;
+    private int n_decks;
     public Deck( int n_decks ) {
 	Card card;
+	this.n_decks = n_decks;
+	shuffle_up();
+    };
+
+    private void shuffle_up() {
 	cards = new java.util.Stack<Card>();
 	for( int i = 0; i < n_decks; i++ ) {
 	    for( Ranks rank: Ranks.values() ) {
@@ -47,18 +63,12 @@ class Deck {
 	Collections.shuffle(cards);
     };
 
-    public void draw() {
-	System.out.println(cards.pop().toString());
+    public Card draw() {
+	if ( ! cards.empty() ) {
+	    return cards.pop();
+	} else {
+	    shuffle_up();
+	    return cards.pop();
+	}
     };
 };
-
-
-public class Assignment2 {
-
-    public static void main(String args[])
-    {
-	Deck deck = new Deck(1);
-	deck.draw();
-	deck.draw();
-    }
-}
