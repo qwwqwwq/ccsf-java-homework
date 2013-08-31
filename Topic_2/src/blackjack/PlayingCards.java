@@ -1,3 +1,16 @@
+/*
+
+Name: Jeff Quinn
+
+Course: Programming Fundamentals: CS111B
+
+CRN: 71755 
+
+Assignment: 2
+
+Date: 8/30/13
+
+*/
 package blackjack;
 import java.util.Scanner;
 import java.util.Stack;
@@ -9,6 +22,7 @@ enum Suits {
 };
 
 enum Ranks {
+    // Enum values are the string that is rendered for that card
     deuce("2"), three("3"), four("4"), five("5"), six("6"),
     seven("7"), eight("8"), nine("9"), ten("10"), jack("J"),
     queen("Q"), king("K"), ace("A");
@@ -23,6 +37,9 @@ enum Ranks {
 
 
 class Card {
+    /*
+    * A card object, holds the suit and rank
+    */
     private Ranks rank;
     private Suits suit;
     public Card( Ranks rank, Suits suit ) {
@@ -43,6 +60,9 @@ class Card {
 };
 
 class Deck {
+    /*
+    * Deck of cards using stack data structure
+    */
     private java.util.Stack<Card> cards;
     private int n_decks;
     public Deck( int n_decks ) {
@@ -60,13 +80,14 @@ class Deck {
 		};
 	    };
 	};
-	Collections.shuffle(cards);
+	Collections.shuffle(cards); // Shuffle cards
     };
 
     public Card draw() {
 	if ( ! cards.empty() ) {
 	    return cards.pop();
 	} else {
+	    // If the deck is exhausted, reshuffle
 	    shuffle_up();
 	    return cards.pop();
 	}

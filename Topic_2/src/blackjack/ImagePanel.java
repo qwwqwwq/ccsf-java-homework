@@ -1,3 +1,16 @@
+/*
+
+Name: Jeff Quinn
+
+Course: Programming Fundamentals: CS111B
+
+CRN: 71755 
+
+Assignment: 2
+
+Date: 8/30/13
+
+*/
 package blackjack;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -20,24 +33,32 @@ import blackjack.Ranks;
 import blackjack.BlackJackGame;
 
 class ImagePanel extends JPanel {
-
-    private Image img;
+    /*
+    * Top level panel for the blackjack game.
+    */
+    private Image table;
     private BlackJackGame game = new BlackJackGame();
-    private Image spade;
+    private Image suits;
     private JButton hitBtn = new JButton("hit");
     private JButton stayBtn = new JButton("stay");
     private JPanel hitPanel;
     private JPanel stayPanel;
-    private Point p1 = new Point(333, 230);
-    private boolean playing = false;
-    private boolean dealer_playing = false;
-    private boolean is_new_hand = false;
-    private boolean refresh = false;
+    private Point p1 = new Point(333, 230); //initalized to where hero will be dealt
+    private boolean playing = false;        // when this is true, hero will be dealt
+    private boolean dealer_playing = false; // when this is true, dealer will be dealt
+    private boolean is_new_hand = false;    // when this is true, all buttons will start new hand
+    private boolean refresh = false;        // when this is true repaint will refresh board
+					    // and start new hand
 
-    public ImagePanel(Image img, Image spade) {
-	this.img = img;
-	this.spade = spade;
-	Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));
+    public ImagePanel(Image table, Image suits) {
+	/*
+	* Construct the board
+	* Add background image, and side panels for buttons
+	* Add listeners for buttons
+	*/
+	this.table = table;
+	this.suits = suits;
+	Dimension size = new Dimension(table.getWidth(null), table.getHeight(null));
 	setPreferredSize(size);
 	setMinimumSize(size);
 	setMaximumSize(size);
@@ -69,6 +90,7 @@ class ImagePanel extends JPanel {
     }
 
     private void hit_me() {
+	// Method for hit button
 	if (is_new_hand) {
 	    new_hand();
 	    is_new_hand = false;
@@ -80,6 +102,7 @@ class ImagePanel extends JPanel {
     };
 
     private void stay() {
+	// Method for stay button
 	if (is_new_hand) {
 	    new_hand();
 	    is_new_hand = false;
@@ -102,6 +125,7 @@ class ImagePanel extends JPanel {
     };
 
     private void new_hand() {
+	// Refresh board, deal new hand
 	playing = false;
 	dealer_playing = false;
 	this.removeAll();
@@ -117,8 +141,9 @@ class ImagePanel extends JPanel {
     public void paintComponent(Graphics g) {
 	Card card;
 	if( refresh ) {
+	    //Deal new hand
 	    refresh = false;
-	    g.drawImage(img, 0, 0, null);
+	    g.drawImage(table, 0, 0, null);
 	    card = game.hit_hero();
 	    drawCard(g, card);
 	    increment_deal_position();
@@ -137,6 +162,7 @@ class ImagePanel extends JPanel {
 	    };
 
 	} else if ( playing ) {
+	    // Hit hero
 	    playing = false;
 	    card = game.hit_hero();
 	    drawCard(g, card);
@@ -152,6 +178,7 @@ class ImagePanel extends JPanel {
 		is_new_hand = true;
 	    };
 	} else if( dealer_playing ) {
+	    // Hit dealer until bust or hand > 17
 	    dealer_playing = false;
 	    switch_dealer();
 	    while( game.will_dealer_play() ) {
@@ -180,6 +207,8 @@ class ImagePanel extends JPanel {
     }
 
     public void drawCard(Graphics g, Card c) {
+	// render a card on the board
+	// based on the card rank and suit
 	g.setColor(Color.white);
 	g.fillRoundRect(p1.x, p1.y, 35, 50, 10, 10);
 	g.setColor(Color.black);
@@ -190,6 +219,8 @@ class ImagePanel extends JPanel {
 	    g.setColor(Color.black);
 	};
 	g.drawString(c.toString(), p1.x+6, p1.y+13);
+	// This is for chopping up the source image
+	// Which is a single gif that has the 4 suits on it
 	int srcx1, srcx2, srcy1, srcy2;
 	switch (c.getSuit()) {
 	    case heart:
@@ -208,10 +239,11 @@ class ImagePanel extends JPanel {
 		srcx1 = 40; srcy1 = 40; srcx2 = 80; srcy2 = 80;
 		break;
 	};
-	g.drawImage(this.spade, p1.x+6, p1.y+16, p1.x+17, p1.y+27, srcx1, srcy1, srcx2, srcy2 , null);
+	g.drawImage(this.suits, p1.x+6, p1.y+16, p1.x+17, p1.y+27, srcx1, srcy1, srcx2, srcy2 , null);
     };
 
     private void display() {
+	// Initalize display
 	JFrame f = new JFrame("BlackJack");
 	f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	f.add(this);
@@ -230,8 +262,7 @@ class ImagePanel extends JPanel {
 		  .getResource("/images/table.png");
 	    URL suits = ImagePanel.class
 		  .getResource("/images/suits.gif");
-	    Image tableicon = new ImageIcon(table).getImage();
-	    new ImagePanel(tableicon, new ImageIcon(suits).getImage()).display();
+	    new ImagePanel(new ImageIcon(table).getImage(), new ImageIcon(suits).getImage()).display();
 	};
 	});
     }
